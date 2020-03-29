@@ -53,8 +53,8 @@ Controller
                                 {
                                     var body = "<p>Email From: {0} ({1})</p><p>Message:</p><p>{2}</p>";
                                     var message = new MailMessage();
-                                    message.To.Add(new MailAddress("kevatrakesh5@gmail.com"));  // replace with valid value 
-                                    message.From = new MailAddress("kevatrakesh8@outlook.com");  // replace with valid value 
+                                    message.To.Add(new MailAddress("kevatrakesh15@gmail.com"));  // replace with valid value 
+                                    message.From = new MailAddress("kevatrakesh18@outlook.com");  // replace with valid value 
                                     message.Subject = "Your email subject";
                                     message.Body = string.Format(body, model.FromName, model.FromEmail, model.Message);    // here show all data from user
                                     message.IsBodyHtml = true;
@@ -63,8 +63,8 @@ Controller
                                     {
                                         var credential = new NetworkCredential
                                         {
-                                            UserName = "kevatrakesh8@outlook.com",  // replace with valid value > Login
-                                            Password = "Rakesh@123"  // replace with valid value
+                                            UserName = "kevatrakesh18@outlook.com",  // replace with valid value > Login
+                                            Password = "Pooja@123"  // replace with valid value
                                         };
                                         smtp.Credentials = credential;
                                         smtp.Host = "smtp-mail.outlook.com";
