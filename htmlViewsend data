@@ -1,0 +1,173 @@
+Model ************************************************************
+
+                using System;
+                using System.Collections.Generic;
+                using System.ComponentModel.DataAnnotations;
+                using System.Linq;
+                using System.Web;
+
+                namespace EmailWebApplication.Models
+                {
+                    public class MailModel
+                    {
+                        [Required, Display(Name = "Your name")]
+                        public string Name { get; set; }
+                        [Required, Display(Name = "Your email"), EmailAddress]
+                        public string FromEmail { get; set; }
+                        [Required]
+                        public string phone { get; set; }
+                        [Required]
+                        public string City { get; set; }
+
+                        [Required]
+                        public string BuyOrSell { get; set; }
+                    }
+                }
+
+
+********************************************************************************************************
+Controller : 
+
+                    using System;
+                    using System.Collections.Generic;
+                    using System.Linq;
+                    using System.Web;
+                    using System.Net;
+                    using System.Net.Mail;
+                    using System.Web.Mvc;
+                    using System.Threading.Tasks;
+                    using EmailWebApplication.Models;
+
+                    namespace EmailWebApplication.Controllers
+                    {
+                        public class SendToEmailController : Controller
+                        {
+                            // GET: SendToEmail
+
+                            public ActionResult Index()
+                            {
+                                return View();
+                            }
+
+                            [HttpPost]
+                           // [ValidateAntiForgeryToken]
+                            public async Task<ActionResult> Index(MailModel model,string myname,string mymail,string myphone, string myarea, string myser_buyOrsell)
+                            { 
+                                   // var body = "<p>Email From: {0} ({1})</p><p>Message:</p><p>{2}</p>";
+                                    var body = "<p>Customer Name : {0}</p>    <p>Email From : {1}</p>      <p>Phone : {2}</p>  <p>Area : {3}</p>  <p>Type : {4}</p>";
+                                    var message = new MailMessage();
+                                    message.To.Add(new MailAddress("kevatrakesh5@gmail.com"));  // replace with valid value 
+                                    message.From = new MailAddress("kevatrakesh8@outlook.com");  // replace with valid value 
+                                    message.Subject = "Your email subject";
+                                    message.Body = string.Format(body, myname, mymail, myphone, myarea, myser_buyOrsell);    // here show all data from user
+                                    message.IsBodyHtml = true;
+
+                                    using (var smtp = new SmtpClient())
+                                    {
+                                        var credential = new NetworkCredential
+                                        {
+                                            UserName = "kevatrakesh8@outlook.com",  // replace with valid value > Login
+                                            Password = "Rakesh@123"  // replace with valid value
+                                        };
+                                        smtp.Credentials = credential;
+                                        smtp.Host = "smtp-mail.outlook.com";
+                                        smtp.Port = 587;
+                                        smtp.EnableSsl = true;
+                                        await smtp.SendMailAsync(message);
+                                        return RedirectToAction("Sent");
+                                    }
+
+
+                            }
+
+                            public ActionResult Sent()
+                            {
+                                return View();
+                            }
+                        }
+                    }
+
+
+**********************************************************************************************************************************
+View.cshtml
+              @model EmailWebApplication.Models.MailModel
+              @{
+                  ViewBag.Title = "Index";
+              }
+
+              <h2>Index</h2>
+              @using (Html.BeginForm("Index", "SendToEmail", FormMethod.Post, new { enctype = "multipart/form-data", onSubmit = "", @class = "hero__form v1 filter listing-filter property-filter", @id = "nameform" }))
+              { 
+                  <div class="call-to-action bg-fixed bg-h mt-4 consult-form v1" style="background-image: url(images/bg/call-to-action-bg.jpg)">
+                      <div class="overlay op-7"></div>
+                      <div class="container">
+                          <div class="row">
+                              <div class="col-lg-8 offset-lg-2 col-md-12 text-center">
+                                  <div class="action-title sm-center">
+                                      <h2>Get a Free Consultation</h2>
+                                      <p>With no pressure to commit and no money collected until we sell your home, why not schedule your free consultation and let our expert knowledge and resources help you realize your goal of buying or selling a home.</p>
+                                  </div>
+                              </div>
+                          </div>
+                          <div class="row consult-form">
+                              <div class="col-lg-4 col-md-6 col-12">
+                                  <div class="form-group">
+                                      <input type="text" class="form-control filter-input" placeholder="Your name" id="myname" name="myname">
+                                  </div>
+                              </div>
+                              <div class="col-lg-4 col-md-6 col-12">
+                                  <div class="form-group">
+                                      <input type="text" class="form-control filter-input" placeholder="Your mail" id="mymail" name="mymail">
+                                  </div>
+                              </div>
+                              <div class="col-lg-4 col-md-6 col-12">
+                                  <div class="form-group">
+                                      <input type="text" class="form-control filter-input" placeholder="Your phone number" id="myphone" name="myphone">
+                                  </div>
+                              </div>
+                              <div class="col-lg-4 col-md-6 col-12">
+                                  <div class="form-group">
+                                      <select class="listing-input hero__form-input  form-control custom-select" id="myarea" name="myarea">
+                                          <option value="">Select Area</option>
+                                          <option value="Ghatkopar">Ghatkopar</option>
+                                          <option value="Vikroli">Vikroli</option>
+                                          <option value="kurla">kurla</option>
+                                          <option value="Mulund">Mulund</option>
+                                          <option value="Thane">Thane</option>
+                                          <option value="Andheri">Andheri</option>
+                                          <option value="Badalapur">Badalapur</option>
+                                      </select>
+                                  </div>
+                              </div>
+                              <div class="col-lg-4 col-md-6 col-12">
+                                  <div class="form-group">
+                                      <select class="listing-input hero__form-input  form-control custom-select" id="myser_buyOrsell" name="myser_buyOrsell">
+                                          <option value="">Buy a Property</option>
+                                          <option value="For Sale">For Sale</option>
+                                          <option value="For Rent">For Rent</option>
+                                      </select>
+                                  </div>
+                              </div>
+                              <div class="col-lg-4 col-md-6 col-12">
+                                  @*<a href="#" class="btn v8">Send Message</a>*@
+                                  <div class="submit_btn">
+                                      <button class="btn v3" type="submit" form="nameform" value="Submit">Search</button>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+              }
+              
+ *****************************************************************
+ Send.cshtml
+           @{
+              ViewBag.Title = "Sent";
+          }
+
+          <h2>mail send </h2>
+
+
+ 
+
+
