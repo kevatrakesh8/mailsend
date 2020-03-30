@@ -1,0 +1,177 @@
+ContactUsForm.cshtml  ****************************************
+          
+            @model IEnumerable<RealEstateHariKripa.Models.property>
+            @{
+                Layout = null;
+            }
+           @using (Ajax.BeginForm("ContactUsForm", "RealEstate", new { @class = "hero__form v1 filter listing-filter property-filter" },
+                                      new AjaxOptions
+                                      {
+                                          HttpMethod = "Post",
+                                          OnSuccess = "OnSuccess",
+                                          OnFailure = "OnFailure",
+                                          LoadingElementId = "nameform"
+                                      }))
+                  {
+                      <div class="call-to-action bg-fixed bg-h mt-4 consult-form v1" style="background-image: url(/images/bg/call-to-action-bg.jpg)">
+                          <div class="overlay op-7"></div>
+                          <div class="container">
+                              <div class="row">
+                                  <div class="col-lg-8 offset-lg-2 col-md-12 text-center">
+                                      <div class="action-title sm-center">
+                                          <h2>Get a Free Consultation</h2>
+                                          <p>With no pressure to commit and no money collected until we sell your home, why not schedule your free consultation and let our expert knowledge and resources help you realize your goal of buying or selling a home.</p>
+                                      </div>
+                                  </div>
+                              </div>
+                              <div class="row consult-form">
+                                  <div class="col-lg-4 col-md-6 col-12">
+                                      <div class="form-group">
+                                          <input type="text" class="form-control filter-input" placeholder="Your name" id="Name" name="Name" required>
+                                      </div>
+                                  </div>
+                                  <div class="col-lg-4 col-md-6 col-12">
+                                      <div class="form-group">
+                                          <input type="text" class="form-control filter-input" placeholder="Your mail" id="FromEmail" name="FromEmail" required>
+                                      </div>
+                                  </div>
+                                  <div class="col-lg-4 col-md-6 col-12">
+                                      <div class="form-group">
+                                          <input type="text" class="form-control filter-input" placeholder="Your phone number" id="phone" name="phone" required>
+                                      </div>
+                                  </div>
+                                  <div class="col-lg-4 col-md-6 col-12">
+                                      <div class="form-group">
+                                          <select class="listing-input hero__form-input  form-control custom-select" id="City" name="City">
+                                              <option value="">Select Area</option>
+                                              <option value="Ghatkopar">Ghatkopar</option>
+                                              <option value="Vikroli">Vikroli</option>
+                                              <option value="kurla">kurla</option>
+                                              <option value="Mulund">Mulund</option>
+                                              <option value="Thane">Thane</option>
+                                              <option value="Andheri">Andheri</option>
+                                              <option value="Badalapur">Badalapur</option>
+                                          </select>
+                                      </div>
+                                  </div>
+                                  <div class="col-lg-4 col-md-6 col-12">
+                                      <div class="form-group">
+                                          <select class="listing-input hero__form-input  form-control custom-select" id="BuyOrSell" name="BuyOrSell" required>
+                                              <option value="">Buy a Property</option>
+                                              <option value="For Sale">For Sale</option>
+                                              <option value="For Rent">For Rent</option>
+                                          </select>
+                                      </div>
+                                  </div>
+                                  <div class="col-lg-4 col-md-6 col-12">
+                                      @*<a href="#" class="btn v8">Send Message</a>*@
+                                      <div class="submit_btn">
+                                          <button class="btn v3" type="submit" >Send Enquiry</button>
+                                            @*<input class="btn v3" type="submit"   value="Send Enquiry" />*@
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                  }
+                  
+                  <script src="~/Scripts/jquery-3.3.1.js"></script>
+                  @*<script src="~/Scripts/jquery-3.3.1.min.js"></script>*@
+                  <script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
+                  @*<script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>*@
+                  <script src="~/Scripts/jquery.validate.js"></script>
+                  <script src="~/Scripts/jquery.validate.min.js"></script>
+                  <script src="~/Scripts/jquery.validate.unobtrusive.js"></script>    
+                  <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+                  <script src="~/Scripts/notify.min.js"></script> 
+                  <!--plugin js-->
+                  <script src="~/js/plugin.js"></script>
+                  <!--Main js-->
+                  <script src="~/js/main.js"></script> 
+
+
+                  <script>
+                  function OnSuccess() {        
+                          $("#Name").val('');
+                          $("#FromEmail").val('');
+                          $("#phone").val('');
+                          $("#City").val('');
+                          $("#BuyOrSell").val('');
+                       alert("This is alert")
+                  }
+
+              </script>
+              
+              
+ Controller :    **********************************************************************
+                using System.Web.Mvc;
+                using PagedList;
+                using System; 
+                using System.Net;
+                using System.Net.Mail; 
+                using System.Threading.Tasks; 
+                
+               public ActionResult ContactUs()
+                      {
+                          return View(); 
+                      }
+                      public ActionResult ContactUsForm()
+                      {
+                          return View();
+                      }
+                      [HttpPost]
+                      // [ValidateAntiForgeryToken]
+                      public async Task<ActionResult> ContactUsForm(MailModel model)
+                      {
+
+                              // var body = "<p>Email From: {0} ({1})</p><p>Message:</p><p>{2}</p>";
+                              var body = "<p>Customer Name : {0}</p>    <p>Email From : {1}</p>      <p>Phone : {2}</p>  <p>Area : {3}</p>  <p>Type : {4}</p>";
+                              var message = new MailMessage();
+                              message.To.Add(new MailAddress("kevatrakesh5@gmail.com"));  // replace with valid value 
+                              message.From = new MailAddress("kevatrakesh8@outlook.com");  // replace with valid value 
+                              message.Subject = "Your email subject";
+                              message.Body = string.Format(body, model.Name, model.FromEmail, model.phone, model.City, model.BuyOrSell);    // here show all data from user
+                              message.IsBodyHtml = true;
+                              ModelState.Clear();
+                              using (var smtp = new SmtpClient())
+                              {
+                                  var credential = new NetworkCredential
+                                  {
+                                      UserName = "kevatrakesh8@outlook.com",  // replace with valid value > Login
+                                      Password = "Rakesh@123"  // replace with valid value
+                                  };
+                                  smtp.Credentials = credential;
+                                  smtp.Host = "smtp-mail.outlook.com";
+                                  smtp.Port = 587;
+                                  smtp.EnableSsl = true;
+                                  await smtp.SendMailAsync(message);
+                                  return Json(true, JsonRequestBehavior.AllowGet);
+                              }  
+                      }
+                      
+Model ***********************************************************************************
+            using System;
+            using System.Collections.Generic;
+            using System.ComponentModel.DataAnnotations;
+            using System.Linq;
+            using System.Web;
+
+            namespace RealEstateHariKripa.Models
+            {
+                public class MailModel
+                {
+                    [Required, Display(Name = "Your name")]
+                    public string Name { get; set; }
+                    [Required, Display(Name = "Your email"), EmailAddress]
+                    public string FromEmail { get; set; }
+                    [Required]
+                    public string phone { get; set; }
+                    [Required]
+                    public string City { get; set; }
+
+                    [Required]
+                    public string BuyOrSell { get; set; }
+                }
+            }
+ 
+              
